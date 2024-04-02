@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" lang="ru">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Страница администратора</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="start">
+<nav class="navbar navbar-dark bg-dark">
+    <div  class="text-light" id="nav-bar-user">
+        <span id="nav-user" class="font-weight-bold my-1 h5"></span>
+        <span> with roles: </span>
+        <span id="nav-role" class="my-1"></span>
+    </div>
+    <div class="font-weight-bold">
+        <a class="text-secondary nav-link my-2 my-sm-0" th:href="@{/logout}">Выйти</a>
+    </div>
+</nav>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-1 col-sm-2 min-vh-100 p-0">
+            <div class="list-group mt-3" id="list-tab" role="tablist">
+                <a class="list-group-item list-group-item-action active" id="list-admin-list" data-toggle="list" href="#list-admin" role="tab" aria-controls="admin">Admin</a>
+                <a class="list-group-item list-group-item-action" data-toggle="html" href="/user" role="tab">User</a>
+            </div>
+        </div>
+
+        <div class="col col-sm-10 bg-light">
+            <h1 class="mt-3">Панель администратора</h1>
+            <div class="tab-content mt-3" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="list-admin" role="tabpanel" aria-labelledby="list-admin-list">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item" id="list-item">
+                            <a class="nav-link active" id="user-tab" data-toggle="tab" href="#user-list" role="tab" aria-controls="user-list" aria-selected="true">Список пользователей</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="add-tab" data-toggle="tab" href="#addUser" role="tab" aria-controls="add" aria-selected="false">Новый пользователь</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="myTabContent">
+                        <div class="tab-pane fade show active" id="user-list" role="tabpanel" aria-labelledby="user-list-tab">
+                            <div>
+                                <div class="border rounded-top pt-2 pb-1">
+                                    <h5 class="ml-3">Список пользователей</h5>
+                                </div>
+
+                                <div class="bg-white p-3 border rounded-bottom">
+                                    <table class="table table-striped table-responsive-lg p-3" id="table-info">
+                                        <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Логин</th>
+                                            <th>Имя</th>
+                                            <th>Фамилия</th>
+                                            <th>Email</th>
+                                            <th>Пароль</th>
+                                            <th>Роль</th>
+                                            <th >Удалить</th>
+                                            <th >Изменить</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="table-info-body"></tbody>
+                                    </table>
+
+                                    <div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <form  method="post" id="edit-form">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editTitle">Изменение данных пользователя</h5>
+                                                        <button type="button" class="close" id="close-edit" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="form-group text-center">
+                                                            <label for="edit-id" class="font-weight-bold h5">ID</label>
+                                                            <input type="text" class="form-control" name="id" id="edit-id" aria-describedby="id"  readonly>
+                                                        </div>
+                                                        <div class="form-group text-center">
+                                                            <label for="edit-login" class="font-weight-bold h5">Логин</label>
+                                                            <input type="text" class="form-control" name="username" id="edit-login" aria-describedby="username">
+                                                        </div>
+                                                        <div class="form-group text-center">
+                                                            <label for="edit-first_name" class="font-weight-bold mx-auto h5">Имя</label>
+                                                            <input type="text" class="form-control" name="firstName" id="edit-first_name" aria-describedby="first_name">
+                                                        </div>
+                                                        <div class="form-group text-center">
+                                                            <label for="edit-last_name" class="font-weight-bold mx-auto h5">Фамилия</label>
+                                                            <input type="text" class="form-control" name="lastName" id="edit-last_name" aria-describedby="last_name">
+                                                        </div>
+                                                        <div class="form-group text-center">
+                                                            <label for="edit-email" class="font-weight-bold mx-auto h5">Email</label>
+                                                            <input type="email" class="form-control" name="email" id="edit-email" aria-describedby="email">
+                                                        </div>
+                                                        <div class="form-group text-center">
+                                                            <label for="edit-password" class="font-weight-bold mx-auto h5">Пароль</label>
+                                                            <input type="password" class="form-control input-hide" name="password" id="edit-password" aria-describedby="password">
+                                                        </div>
+                                                        <div class="form-group text-center">
+                                                            <label for="edit-role" class="font-weight-bold mx-auto h5">Роль</label>
+                                                            <select size="2" multiple class="form-control" name="roles" id="edit-role"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                                                        <button type="submit" class="btn btn-primary" id="edit-save">Сохранить</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="tab-pane fade" id="addUser" role="tabpanel" aria-labelledby="add-tab">
+                            <div class="border rounded-top pt-2 pb-1">
+                                <h5 class="ml-3">Добавление пользователя</h5>
+                            </div>
+                            <div class="bg-white border rounded-bottom">
+                                <div class="w-25 mx-auto py-3">
+                                <form action="/addNewUser/" id="addForm" method="post">
+                                    <div class="form-group text-center">
+                                        <label for="login" class="font-weight-bold h5">Логин</label>
+                                        <input type="text" class="form-control" name="username" id="login" aria-describedby="login" placeholder="Логин" >
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <label for="first_name" class="font-weight-bold mx-auto h5">Имя</label>
+                                        <input type="text" class="form-control" name="firstName" id="first_name" aria-describedby="first_name" placeholder="Имя" >
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <label for="last_name" class="font-weight-bold mx-auto h5">Фамилия</label>
+                                        <input type="text" class="form-control" name="lastName" id="last_name" aria-describedby="last_name" placeholder="Фамилия" >
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <label for="email" class="font-weight-bold mx-auto h5">Email</label>
+                                        <input type="email" class="form-control" name="email" id="email" aria-describedby="email" placeholder="Email" >
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <label for="password" class="font-weight-bold mx-auto h5">Пароль</label>
+                                        <input type="password" class="form-control" name="password" id="password" aria-describedby="password" placeholder="Пароль" >
+
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <label for="role" class="font-weight-bold mx-auto h5">Роль</label>
+                                        <select size="2" multiple class="form-control" name="roles" id="role"></select>
+                                    </div>
+                                    <div class="form-group text-center">
+                                        <button type="submit" class="btn btn-success btn-lg" id="button-add">Сохранить</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    async function populate() {
+        const request = "http://localhost:8081/users-list";
+        let response = await fetch(request);
+        let listUsers = await response.text();
+
+        const request1 = "http://localhost:8081/role-list";
+        let response1 = await fetch(request1);
+        let listRole = await response1.text();
+        let role = $('#role');
+        let editRole = $('#edit-role');
+
+        const req = "http://localhost:8081/authentication-user"
+        let res = await fetch(req);
+        let user = await res.text();
+
+        navUser(user);
+        fillTable(listUsers);
+        tableButton();
+        fillRole(listRole, role);
+        fillRole(listRole, editRole);
+    }
+    populate();
+
+    function navUser(user) {
+        const data = JSON.parse(user);
+        let uName = document.getElementById('nav-user');
+        let uRole = document.getElementById('nav-role');
+        let x = ''
+        uName.innerText = data['username']
+        for (let i in data['roles']) {
+            x += data['roles'][i]['name']
+        }
+        uRole.innerText = x.replace(/ROLE_/g, ' ');
+    }
+
+    function fillTable(listUsers) {
+        const data = JSON.parse(listUsers).sort(function (a, b) {return a.id - b.id});
+        let body = document.getElementById('table-info-body')
+        if(document.getElementById('table-info-body')){
+            body.innerHTML = '';
+        }
+
+        $('#table-info-body').append(`
+            ${data.map(n => `
+                <tr>
+                    <td>${n.id}</td>
+                    <td>${n.username}</td>
+                    <td>${n.firstName}</td>
+                    <td>${n.lastName}</td>
+                    <td>${n.email}</td>
+                    <td>${n.password}</td>
+                    <td>${Object.values(n.roles).map(n =>`${n.name.replace(/ROLE_/g,' ')}`)}</td>
+                    <td><button type="submit" class="btn btn-danger" data-type="delete">Удалить</button></td>
+                    <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#edit" data-type="edit">Изменить</button></td>
+                </tr>`).join('')}
+            `);
+    }
+
+    function fillRole(listRole, role) {
+        const data = JSON.parse(listRole);
+        role.append(`
+            ${data.map(n => `
+                <option value = "${n.id}">${n.name}</option>
+            `)}
+        `)
+    }
+
+    function tableButton() {
+        const table = document.getElementById('table-info-body');
+        const btn = document.getElementById('edit-save');
+        table.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') return;
+            const tr = e.target.closest('tr');
+            if (e.target.dataset.type === 'edit') editRow(tr);
+            if (e.target.dataset.type === 'delete') deleteRow(tr);
+            btn.addEventListener('click', () => {
+                if ($('#edit-password').value == null) editPass(tr);
+            })
+        });
+    }
+
+
+    function editRow(tr) {
+        $("#edit-id").attr("value", tr.cells[0].innerText);
+        $("#edit-login").attr("value", tr.cells[1].innerText);
+        $("#edit-first_name").attr("value", tr.cells[2].innerText);
+        $("#edit-last_name").attr("value", tr.cells[3].innerText);
+        $("#edit-email").attr("value", tr.cells[4].innerText);
+    }
+    function editPass(tr) {
+        $("#edit-password").attr("value", tr.cells[5].innerText);
+    }
+    function deleteRow(tr) {
+        let id = tr.cells[0].innerText;
+        let request = 'http://localhost:8081/user/delete/' + id;
+        fetch(request, {
+            method: 'DELETE',
+        });
+        tr.parentElement.removeChild(tr);
+    }
+
+    let addForm = document.getElementById('addForm')
+    addForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let formData = new FormData(addForm)
+        fetch('/addNewUser', {
+            method: 'POST',
+            body: formData
+        });
+        $('form input[type=text], input[type=password], input[type=email]').val('')
+        document.getElementById('user-tab').click()
+        setTimeout(populate, 200)
+
+    })
+
+    let editForm = document.getElementById('edit-form')
+    editForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let formData = new FormData(editForm)
+        fetch('/editUser', {
+            method: 'PUT',
+            body: formData
+        });
+        $('form input[type=password]').val('')
+        document.getElementById('close-edit').click()
+        setTimeout(populate, 100)
+    })
+
+</script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
