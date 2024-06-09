@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Main-Class: ru.kata.spring.boot_security.demo.SpringBootSecurityDemoAppl
+Main-Class: ru.oldyrev.MegaKeys.boot_security.demo.SpringBootSecurityDemoAppl
  ication
 
