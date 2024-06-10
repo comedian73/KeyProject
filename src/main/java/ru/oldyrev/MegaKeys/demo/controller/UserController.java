@@ -8,7 +8,6 @@ import ru.oldyrev.MegaKeys.demo.service.UserService;
 @Controller
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;
 
     @GetMapping (value = "/user")
     public String user(){

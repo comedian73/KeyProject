@@ -6,8 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -27,13 +29,15 @@ public class Key {
     private Long id;
 
     @NotNull(message = "Не может быть пустым")
+    @Column(name = "number")
+    private String number;
+
+    @NotNull(message = "Не может быть пустым")
     @Column(name = "name")
     private String name;
 
-    @NotNull(message = "Не может быть пустым")
-    @Size(min = 10, message = "Не менее 10-ти цифр")
-    @Column(name = "number")
-    private String number;
+    @PositiveOrZero
+    private byte nok;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Contractor> contractor;
