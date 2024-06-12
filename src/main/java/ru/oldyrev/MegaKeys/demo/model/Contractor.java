@@ -39,4 +39,7 @@ public class Contractor {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Organization> organization;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Key> keys;
 }

@@ -6,8 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import ru.oldyrev.MegaKeys.demo.model.Key;
 import ru.oldyrev.MegaKeys.demo.model.Role;
 import ru.oldyrev.MegaKeys.demo.model.User;
+import ru.oldyrev.MegaKeys.demo.service.KeyService;
 import ru.oldyrev.MegaKeys.demo.service.UserService;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 public class RestController {
 
     private final UserService userService;
+    private final KeyService keyService;
 
     @GetMapping("/users-list")
     public List<User> listUser() {
@@ -48,4 +51,10 @@ public class RestController {
     public void editUser(@ModelAttribute User user) {
         userService.updateUser(user);
     }
+
+    @GetMapping("/keys-list")
+    public List<Key> keyList() {return keyService.getAllKey();}
+
+    @PostMapping(value = "/addNewKey", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void addNewKey(@ModelAttribute Key key) {keyService.save(key);}
 }

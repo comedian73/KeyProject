@@ -37,7 +37,8 @@ public class Key {
     private String name;
 
     @PositiveOrZero
-    private byte nok;
+    @Column(name = "nok")
+    private int nok;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Contractor> contractor;
