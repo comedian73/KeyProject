@@ -6,8 +6,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+//import ru.oldyrev.MegaKeys.demo.model.Organization;
 import ru.oldyrev.MegaKeys.demo.model.Role;
 import ru.oldyrev.MegaKeys.demo.model.User;
+//import ru.oldyrev.MegaKeys.demo.repo.OrganizationRepository;
 import ru.oldyrev.MegaKeys.demo.repo.RoleRepository;
 import ru.oldyrev.MegaKeys.demo.repo.UserRepository;
 
@@ -26,8 +28,11 @@ public class UserService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
+//    private final OrganizationRepository organizationRepository;
+
     @PostConstruct
     private void preLoad() {
+//        organizationRepository.save(new Organization(1L, "НЕТ", "0000000000", new HashSet<>()));
         roleRepository.save(new Role(1L, "ROLE_ADMIN"));
         roleRepository.save(new Role(2L, "ROLE_USER"));
         saveUser(new User(1L, "admin", "admin", "admin@mail.ru", "admin", "admin", new HashSet<>(roleRepository.findAll())));

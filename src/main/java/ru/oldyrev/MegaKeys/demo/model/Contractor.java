@@ -37,8 +37,8 @@ public class Contractor {
     @Column(name = "phone")
     private String phone;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Organization> organization;
+//    @ManyToMany(fetch = FetchType.EAGER)
+//    private Set<Organization> organization;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Key> keys;

@@ -6,10 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import ru.oldyrev.MegaKeys.demo.model.Key;
-import ru.oldyrev.MegaKeys.demo.model.Role;
-import ru.oldyrev.MegaKeys.demo.model.User;
+import ru.oldyrev.MegaKeys.demo.model.*;
+import ru.oldyrev.MegaKeys.demo.service.ContractorService;
 import ru.oldyrev.MegaKeys.demo.service.KeyService;
+//import ru.oldyrev.MegaKeys.demo.service.OrganizationService;
 import ru.oldyrev.MegaKeys.demo.service.UserService;
 
 import java.util.List;
@@ -20,6 +20,8 @@ public class RestController {
 
     private final UserService userService;
     private final KeyService keyService;
+    private final ContractorService contractorService;
+//    private final OrganizationService organizationService;
 
     @GetMapping("/users-list")
     public List<User> listUser() {
@@ -36,6 +38,11 @@ public class RestController {
     public List<Role> listRole() {
         return userService.getAllRoles();
     }
+
+//    @GetMapping("/organization-list")
+//    public List<Organization> listOrganization() {
+//        return organizationService.getAll();
+//    }
 
     @DeleteMapping("/user/delete/{id}")
     public void delete(@PathVariable Long id) {
@@ -55,6 +62,12 @@ public class RestController {
     @GetMapping("/keys-list")
     public List<Key> keyList() {return keyService.getAllKey();}
 
+    @GetMapping("/contractor-list")
+    public List<Contractor> contractorsList() {return contractorService.getAllContractor();}
+
     @PostMapping(value = "/addNewKey", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void addNewKey(@ModelAttribute Key key) {keyService.save(key);}
+
+    @PostMapping(value = "/addNewContractor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void addNewContractor(@ModelAttribute Contractor contractor) {contractorService.saveContractor(contractor);}
 }
