@@ -5,6 +5,27 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
+<style>
+    .link:hover {
+        background: #5e8c61; /* Цвет фона при наведении */
+        color: #070404;
+    }
+
+    .elastic li.hide {
+        display: none;
+    }
+
+    #goto {
+        display: block;
+    }
+
+    li {
+        list-style-type: none;
+    }
+
+</style>
+
+
 <body>
 <div>
     <nav class="navbar navbar-dark bg-dark">
@@ -21,11 +42,12 @@
         <div class="col col-sm-1 min-vh-100 p-0">
             <div class="list-group mt-3 m-0" id="list-tab" role="tablist">
                 <div id="admin-link">
-                    <a class="list-group-item list-group-item-action" id="list-admin-list" data-toggle="html" href="/admin" role="tab" aria-controls="admin">Админка</a>
+                    <a class="list-group-item list-group-item-action" data-toggle="html" href="/admin" role="tab" aria-controls="admin">Админка</a>
                 </div>
                 <a class="list-group-item list-group-item-action" data-toggle="html" href="/user" role="tab">Пользователи</a>
                 <a class="list-group-item list-group-item-action active" id="list-key-list" data-toggle="html" href="/keys" role="tab">Ключи</a>
                 <a class="list-group-item list-group-item-action" data-toggle="html" href="/contractor" role="tab">Подрядчики</a>
+                <a class="list-group-item list-group-item-action" id="list-report-list" data-toggle="html" href="/report" role="tab">Отчет</a>
             </div>
         </div>
 
@@ -90,6 +112,35 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="goto-contractor" tabindex="-1" role="dialog" aria-labelledby="goto-contractor" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <form action="/addReport/"  method="post" id="goto-form">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="gotoTitle">Добавление ключа</h5>
+                            <button type="button" class="close" id="close-goto" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="goto" class="font-weight-bold h5">Подрядчик</label>
+                                <input type="text" class="form-control" name="contractor" id="goto" aria-describedby="contractor">
+                            </div>
+                            <div>
+                                <ul class="elastic" id="contractor-list-goto">
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                            <button type="submit" class="btn btn-primary" id="goto-save">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -103,9 +154,16 @@
         const req_key = "http://localhost:8081/keys-list"
         let res_key = await fetch(req_key);
         let key = await res_key.text();
+        const req_contractor = "http://localhost:8081/contractor-list"
+        let res_contractor = await fetch(req_contractor);
+        let contractor = await res_contractor.text();
+
         navUser(user);
         fillTable(key);
         hiddenAdmin(user);
+        ulList(contractor);
+        liClick();
+        tableButton();
     }
     start();
     function hiddenAdmin(user) {
@@ -142,7 +200,7 @@
                 <td>${n.name}</td>
                 <td>${n.nok}</td>
                 <td>${Object.values(n.contractor).map(n =>`${n.name} + ' ' + ${n.firstName}`)}</td>
-                <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#goto" data-type="goto">Выдать</button></td>
+                <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#goto-contractor" data-type="goto-contractor">Выдать</button></td>
             </tr>`).join('')}`);
     }
 
@@ -157,9 +215,81 @@
         $('form input[type=text]').val('')
         document.getElementById('list-key-list').click()
         setTimeout(start, 300)
-
     })
 
+    function ulList(contractor) {
+        const data = JSON.parse(contractor).sort(function (a, b) {return a.name - b.name});
+        let body = document.getElementById('contractor-list-goto')
+        if(document.getElementById('contractor-list-goto')){
+            body.innerHTML = '';
+        }
+
+        $('#contractor-list-goto').append(`
+            ${data.map(n => `
+                <li class="link">${n.firstName} ${n.lastName} ${n.phone}"</li>
+            `).join('')}`);
+        let elasticItem = document.querySelectorAll('.elastic li');
+        elasticItem.forEach(function (elem) {
+            elem.classList.add('hide');
+        })
+    }
+    function tableButton() {
+        const table = document.getElementById('key-table-body');
+        table.addEventListener('click', (e) => {
+            if (e.target.tagName !== 'BUTTON') return;
+            const tr = e.target.closest('tr');
+            if (e.target.dataset.type === 'goto-save') addReport(tr);
+        });
+    }
+
+    function addReport(tr) {
+        let gotoContractor = document.getElementById('goto-contractor')
+
+        gotoContractor.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let id = tr.cells[0].innerText;
+            let formData = new FormData(gotoContractor)
+            fetch('/addReport/' + id, {
+             method: 'POST',
+            body: formData
+            })
+            $('form input[type=text]').val('')
+            document.getElementById('list-report-list').click()
+            setTimeout(start, 300)
+        })
+    }
+
+    document.querySelector('#goto').oninput = function (){
+        let val = this.value.trim();
+        let elasticItem = document.querySelectorAll('.elastic li');
+        elasticItem.forEach(function (elem) {
+            elem.classList.add('hide');
+        })
+        if (val !== ''){
+            elasticItem.forEach(function (elem) {
+                if (elem.innerText.search(val) !== -1){
+                    elem.classList.remove('hide');
+                }
+                else {
+                    elem.classList.add('hide');
+                }
+            });
+        }
+        else {
+            elasticItem.forEach(function (elem){
+                elem.classList.add('hide');
+            });
+        }
+    }
+
+    function liClick() {
+        let myList = document.getElementById('contractor-list-goto'),
+         myInput = document.getElementById('goto');
+
+        myList.addEventListener('click', function(event) {
+            myInput.value = event.target.innerHTML;
+        })
+    }
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

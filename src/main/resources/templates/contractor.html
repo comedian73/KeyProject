@@ -26,6 +26,7 @@
                 <a class="list-group-item list-group-item-action" data-toggle="html" href="/user" role="tab">Пользователи</a>
                 <a class="list-group-item list-group-item-action" data-toggle="html" href="/keys" role="tab">Ключи</a>
                 <a class="list-group-item list-group-item-action active" id="list-contractor-list" data-toggle="html" href="/contractor" role="tab">Подрядчики</a>
+                <a class="list-group-item list-group-item-action" data-toggle="html" href="/report" role="tab">Отчет</a>
             </div>
         </div>
 
@@ -126,9 +127,9 @@
         let res = await fetch(req);
         let user = await res.text();
 
-        const req_key = "http://localhost:8081/contractor-list"
-        let res_key = await fetch(req_key);
-        let contractor = await res_key.text();
+        const req_contractor = "http://localhost:8081/contractor-list"
+        let res_contractor = await fetch(req_contractor);
+        let contractor = await res_contractor.text();
 
         navUser(user);
         fillTable(contractor);

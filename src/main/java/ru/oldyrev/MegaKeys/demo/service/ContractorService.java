@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.oldyrev.MegaKeys.demo.model.Contractor;
 import ru.oldyrev.MegaKeys.demo.repo.ContractorRepository;
 
+import javax.annotation.PostConstruct;
+import java.util.HashSet;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,4 +25,9 @@ public class ContractorService {
     public void delete(Long id) {contractorRepository.deleteById(id);}
 
     public List<Contractor> getAllContractor() {return contractorRepository.findAll();}
+
+    @PostConstruct
+    private void preLoad() {
+        contractorRepository.save(new Contractor(1L, "Алексей", "Карев", "7894561230", new HashSet<>()));
+    }
 }

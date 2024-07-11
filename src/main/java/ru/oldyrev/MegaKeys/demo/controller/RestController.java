@@ -10,8 +10,10 @@ import ru.oldyrev.MegaKeys.demo.model.*;
 import ru.oldyrev.MegaKeys.demo.service.ContractorService;
 import ru.oldyrev.MegaKeys.demo.service.KeyService;
 //import ru.oldyrev.MegaKeys.demo.service.OrganizationService;
+import ru.oldyrev.MegaKeys.demo.service.ReportService;
 import ru.oldyrev.MegaKeys.demo.service.UserService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @org.springframework.web.bind.annotation.RestController
@@ -21,6 +23,7 @@ public class RestController {
     private final UserService userService;
     private final KeyService keyService;
     private final ContractorService contractorService;
+    private final ReportService reportService;
 //    private final OrganizationService organizationService;
 
     @GetMapping("/users-list")
@@ -38,6 +41,9 @@ public class RestController {
     public List<Role> listRole() {
         return userService.getAllRoles();
     }
+
+    @GetMapping("/report-list")
+    public List<Report> reportList() { return reportService.getAllReport();}
 
 //    @GetMapping("/organization-list")
 //    public List<Organization> listOrganization() {
@@ -70,4 +76,14 @@ public class RestController {
 
     @PostMapping(value = "/addNewContractor", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public void addNewContractor(@ModelAttribute Contractor contractor) {contractorService.saveContractor(contractor);}
+
+    @PostMapping(value ="/addReport/{keyID}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public void addReport(@PathVariable Long keyID, @ModelAttribute String contractor) {
+        Key key = keyService.getKeyById(keyID);
+        Report report = new Report();
+        report.setDate(LocalDate.now());
+        report.setContractor(contractor);
+        report.setKey(key.getName());
+        reportService.save(report);
+    }
 }
